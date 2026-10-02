@@ -72,8 +72,10 @@
   .photo .opt{font-size:13px;color:var(--muted)}
 
   /* map */
-  .map{height:280px;border-radius:10px;border:1.5px solid var(--line);background:#EAE6DE;position:relative;overflow:hidden;z-index:0}
-  .map.night{background:#1b2030;border-color:#2a3148}
+  .map{height:62vh;min-height:320px;border-radius:10px;border:1.5px solid var(--line);background:#EAE6DE;position:relative;overflow:hidden;z-index:0}
+  .map.night{background:#161a2a;border:6px solid #1F2340;box-shadow:0 0 0 1.5px #3a4160,0 8px 24px rgba(31,35,64,.35)}
+  .map.night .leaflet-tile-pane{filter:invert(1) hue-rotate(190deg) brightness(.8) contrast(.95) saturate(.45)}
+  .map.night .leaflet-control-attribution{background:rgba(22,26,42,.8);color:#aab}
   .map .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
   .mapbar{display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px;font-size:13px;color:var(--muted)}
   .pin{background:var(--cream);border-radius:10px;padding:10px 12px;margin-top:8px;display:flex;gap:10px;align-items:center}
@@ -103,7 +105,7 @@
   .timer{font-variant-numeric:tabular-nums}
   pre{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12px;overflow:auto;max-height:50vh}
   .done{font-size:40px;text-align:center;margin:10px 0}
-  @media (min-width:600px){ .map{height:340px} }
+  @media (min-width:600px){ .map{height:60vh} }
 </style>
 </head>
 <body>
@@ -239,8 +241,7 @@ function initMap(it){
   if(typeof L==='undefined') return;
   const el=document.getElementById('map_'+it.k); el.innerHTML='';
   const map=L.map(el,{zoomControl:true}).setView(gpsPos||[43.7736,11.2135],14);
-  const url=it.night?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
-  L.tileLayer(url,{maxZoom:19,attribution:'© OpenStreetMap © CARTO'}).addTo(map);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
   const m={map,markers:[]}; maps[it.k]=m;
   const icon=i=>L.divIcon({className:'',html:`<div class="marker-icon"><span>${i}</span></div>`,iconSize:[26,26],iconAnchor:[13,26]});
   m.draw=()=>{ m.markers.forEach(x=>map.removeLayer(x)); m.markers=(A[it.k]||[]).map((p,i)=>L.marker([p.lat,p.lng],{icon:icon(i+1)}).addTo(map).on('click',()=>openSheet(it,i))); document.getElementById('pins_'+it.k).innerHTML=pinsHtml(it); el.parentElement.querySelector('.mapbar b').textContent=(A[it.k]||[]).length; };
