@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>Questionario — Fioriture Civiche</title>
+<title>Raccontaci il tuo quartiere — Fioriture Civiche</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -13,14 +13,12 @@
     --red:#E63B4B; --red-soft:#F7C9CE;
     --blue:#2F3E9E; --blue-soft:#DCE1F6;
     --cream:#F3EFE8; --paper:#FFFFFF; --ink:#1F2340; --muted:#6B7085; --line:#E4E1DA;
-    --ok:#2E8B57;
-    --radius:14px;
+    --ok:#2E8B57; --radius:14px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--cream);color:var(--ink);font-family:Poppins,system-ui,sans-serif;font-size:16px;line-height:1.45}
   button,input,textarea,select{font:inherit;color:inherit}
 
-  /* header */
   header{background:var(--cream);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
   .bar{max-width:720px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;gap:12px}
   .wordmark{font-weight:800;line-height:.9;font-size:22px;letter-spacing:-.5px}
@@ -43,43 +41,57 @@
   .q{font-weight:600;font-size:17px;color:var(--blue);margin:0 0 4px}
   .q .code{display:inline-block;background:var(--blue-soft);color:var(--blue);font-size:12px;font-weight:700;padding:2px 7px;border-radius:6px;margin-right:8px;vertical-align:middle}
   .hint{font-size:13px;color:var(--muted);margin:0 0 12px}
-  .note-op{font-size:13px;color:var(--ink);background:var(--cream);border-left:3px solid var(--red);padding:8px 10px;border-radius:0 8px 8px 0;margin:0 0 12px}
-  .note-op b{color:var(--red)}
 
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:9px 14px;cursor:pointer;user-select:none;font-size:15px;transition:all .12s}
   .chip:active{transform:scale(.97)}
   .chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
-  .chips.stack{flex-direction:column}
-  .chips.stack .chip{border-radius:10px;text-align:left}
+  .chips.stack{flex-direction:column}.chips.stack .chip{border-radius:10px;text-align:left}
   .chips.scale{flex-wrap:nowrap;gap:6px}
   .chips.scale .chip{flex:1;text-align:center;min-width:0;padding:9px 6px;font-size:14px;border-radius:10px}
 
   input[type=text],input[type=number],textarea,select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;outline:none}
   input:focus,textarea:focus,select:focus{border-color:var(--blue)}
   textarea{min-height:76px;resize:vertical}
-  .row{display:flex;gap:10px}.row>*{flex:1}
   .sub{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
   .lbl{font-size:13px;font-weight:600;color:var(--ink);margin:0 0 6px}
   .other{margin-top:10px}
 
+  /* intro */
+  .intro{background:var(--paper);border-radius:var(--radius);padding:24px 20px;border:1px solid var(--line)}
+  .intro h1{color:var(--red);font-weight:800;font-size:28px;line-height:1.1;letter-spacing:-.5px;margin:0 0 14px}
+  .intro p{margin:0 0 12px}
+  .intro .tag{display:inline-flex;gap:6px;align-items:center;background:var(--blue-soft);color:var(--blue);border-radius:99px;padding:5px 12px;font-size:13px;font-weight:600;margin-right:6px}
+  .intro .zones{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 14px}
+  .intro .zones span{background:var(--cream);border-radius:8px;padding:4px 10px;font-size:14px;font-weight:500}
+
+  /* photo */
+  .photo{display:flex;gap:12px;align-items:center;margin-top:10px}
+  .photo .thumb{width:72px;height:72px;border-radius:10px;background:var(--cream);border:1.5px dashed var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:22px;overflow:hidden;flex:none}
+  .photo .thumb img{width:100%;height:100%;object-fit:cover}
+  .photo .opt{font-size:13px;color:var(--muted)}
+
   /* map */
-  .map{height:260px;border-radius:10px;border:1.5px solid var(--line);background:#EAE6DE;position:relative;overflow:hidden;z-index:0}
+  .map{height:280px;border-radius:10px;border:1.5px solid var(--line);background:#EAE6DE;position:relative;overflow:hidden;z-index:0}
+  .map.night{background:#1b2030;border-color:#2a3148}
   .map .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
   .mapbar{display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px;font-size:13px;color:var(--muted)}
-  .pin{background:var(--cream);border-radius:10px;padding:10px;margin-top:10px;position:relative}
-  .pin .n{position:absolute;top:-8px;left:10px;background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:1px 7px;border-radius:99px}
-  .pin .x{position:absolute;top:6px;right:8px;border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px}
+  .pin{background:var(--cream);border-radius:10px;padding:10px 12px;margin-top:8px;display:flex;gap:10px;align-items:center}
+  .pin .n{background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;flex:none}
+  .pin .t{flex:1;font-size:14px;min-width:0}
+  .pin .t small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pin button{border:0;background:none;color:var(--muted);cursor:pointer;font-size:15px;padding:4px}
   .marker-icon{width:26px;height:26px;border-radius:50% 50% 50% 0;background:var(--red);transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
   .marker-icon span{transform:rotate(45deg);color:#fff;font-weight:700;font-size:12px}
 
-  /* photo */
-  .photo{display:flex;gap:12px;align-items:center}
-  .photo .thumb{width:84px;height:84px;border-radius:10px;background:var(--cream);border:1.5px dashed var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:22px;overflow:hidden;flex:none}
-  .photo .thumb img{width:100%;height:100%;object-fit:cover}
-  .photo label.btn{display:inline-block}
+  /* pin sheet */
+  .sheet-bg{position:fixed;inset:0;background:rgba(31,35,64,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+  .sheet{background:#fff;width:100%;max-width:720px;border-radius:18px 18px 0 0;padding:18px 16px 24px;box-shadow:0 -4px 24px rgba(0,0,0,.2)}
+  .sheet h3{margin:0 0 4px;color:var(--blue);font-size:17px}
+  .sheet .coords{font-size:12px;color:var(--muted);margin:0 0 12px}
+  .sheet .actions{display:flex;gap:10px;margin-top:14px}
+  .sheet .actions .btn{flex:1;text-align:center}
 
-  /* nav */
   nav{position:fixed;bottom:0;left:0;right:0;background:rgba(243,239,232,.95);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:20}
   nav .in{max-width:720px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;align-items:center}
   .btn{border:1.5px solid var(--blue);background:#fff;color:var(--blue);border-radius:99px;padding:11px 20px;font-weight:600;cursor:pointer}
@@ -87,15 +99,11 @@
   .btn.ghost{border-color:var(--line);color:var(--muted)}
   .btn:disabled{opacity:.4;cursor:default}
   .spacer{flex:1}
-
   .hidden{display:none!important}
   .timer{font-variant-numeric:tabular-nums}
-
-  /* summary */
   pre{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12px;overflow:auto;max-height:50vh}
   .done{font-size:40px;text-align:center;margin:10px 0}
-
-  @media (min-width:600px){ .map{height:320px} }
+  @media (min-width:600px){ .map{height:340px} }
 </style>
 </head>
 <body>
@@ -108,10 +116,10 @@
 </header>
 
 <main>
-  <div class="meta">
+  <div class="meta" id="meta">
     <span class="pill"><span class="dot" id="gpsdot"></span>GPS <b id="gps">in attesa…</b></span>
     <span class="pill">🕒 <b id="clock">—</b></span>
-    <span class="pill">⏱ <b class="timer" id="timer">00:00</b></span>
+    <b class="timer hidden" id="timer">00:00</b>
   </div>
   <div id="view"></div>
 </main>
@@ -124,67 +132,53 @@
 
 <script>
 /* ---------- schema ---------- */
+const LUOGHI=['strada','piazza','giardino / parco','fermata','davanti a scuola','centro commerciale / bar','altro'];
 const S = [
- { id:'op', title:'Avvio', sub:'Compilato dall’operatore prima di iniziare. Posizione e ora sono registrate automaticamente.',
+ { id:'intro', title:'', sub:'', items:[{t:'intro'}]},
+ { id:'A', title:'A · Qui, adesso', sub:'Le prime domande riguardano il posto in cui ti trovi adesso.',
    items:[
-    {k:'operatore', t:'text', q:'Operatore/i', hint:'Nome o sigla di chi somministra'},
-    {k:'contesto', t:'single', q:'Contesto del punto', opts:['strada','piazza','giardino / parco','fermata','davanti a scuola','centro commerciale / bar','altro'], other:true},
-    {k:'compagnia', t:'single', q:'Il ragazzo / la ragazza è', opts:['da solo/a','in coppia','in gruppo'], followIf:'in gruppo', follow:{k:'gruppo_n', t:'number', lbl:'Quanti?'}},
-    {k:'modalita', t:'single', q:'Compilazione', opts:['individuale','con altri che ascoltano o intervengono','di gruppo']},
-    {k:'esito', t:'single', q:'Esito del contatto', hint:'Se rifiuto o nessun rispondente, registra e chiudi: anche il vuoto è un dato.', opts:['risponde','rifiuto','nessun rispondente in questo punto']},
+    {k:'A1', code:'A1', t:'textphoto', q:'Guardati intorno: se dovessi descrivere questo posto a qualcuno/a, cosa gli/le diresti?', hint:'Raccontacelo con qualche parola e, se ti va, scatta una foto.'},
+    {k:'A2', code:'A2', t:'single', q:'Quanto spesso vieni qui?', opts:['quasi ogni giorno','qualche volta a settimana','ogni tanto','è la prima volta o quasi']},
+    {k:'A3', code:'A3', t:'textphoto', q:'Se potessi cambiare una cosa di questo posto, da domani, cosa sarebbe?', hint:'Raccontacelo con qualche parola e, se ti va, scatta una foto.'},
    ]},
- { id:'A', title:'A · Qui, adesso', sub:'Le domande riguardano il posto in cui siamo in questo momento.',
+ { id:'B', title:'B · Nella tua zona', sub:'“Zona” = circa 20–30 minuti a piedi da qui.',
    items:[
-    {k:'A1', code:'A1', t:'multi', q:'Cosa stai facendo qui, adesso?', opts:['aspetto qualcuno','sto con amici/e','sono di passaggio','faccio sport o gioco','mangio / bevo','studio o uso il telefono tranquillo','lavoro','altro'], other:true},
-    {k:'A2', code:'A2', t:'multi', q:'Perché proprio qui e non da un’altra parte?', op:'Non leggere le opzioni: ascolta e codifica.', opts:['è vicino a casa / scuola','ci vengono i miei amici','c’è dove sedersi / stare','è tranquillo, mi sento a mio agio','non c’è altro in zona','c’è una cosa specifica (campo, negozio, wi-fi, ombra…)'], other:true, otherLbl:'Cosa, nello specifico?'},
-    {k:'A3', code:'A3', t:'single', q:'Quanto spesso vieni qui?', opts:['quasi ogni giorno','qualche volta a settimana','ogni tanto','è la prima volta o quasi']},
-    {k:'A4', code:'A4', t:'photo', q:'Guardati intorno. Tra le cose che vedi da qui, qual è quella che racconta meglio questo posto?', op:'Fotografa l’elemento indicato, in primo piano. <b>Mai includere persone.</b>', fields:[{k:'A4_cosa',lbl:'Cos’è?'},{k:'A4_perche',lbl:'Perché l’hai scelta?'}]},
-    {k:'A5', code:'A5', t:'textarea', q:'Se potessi cambiare una cosa di questo posto, da domani, cosa sarebbe?'},
+    {k:'B1', code:'B1', t:'map', q:'A circa 20–30 minuti a piedi da qui, ci sono altri posti dove vai spesso?', hint:'Tocca la mappa per aggiungere un luogo.', sheet:{title:'Un posto dove vai spesso', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché ti piace andarci',t:'text'}]}},
    ]},
- { id:'B', title:'B · Nella zona', sub:'“Zona” = 5–10 minuti a piedi da qui.',
+ { id:'C', title:'C · Nelle ore serali', sub:'Pensa adesso alla tua esperienza in questa zona nelle ore serali…',
    items:[
-    {k:'B1', code:'B1', t:'map', q:'A 5–10 minuti a piedi da qui, ci sono altri posti dove vai spesso?', hint:'Massimo 2. Tocca la mappa per mettere un pin.', max:2, fields:[{k:'cosa',lbl:'Cos’è / cosa ci fai'},{k:'perche',lbl:'Perché ci vai'}]},
-    {k:'B2', code:'B2', t:'single', q:'Come arrivi di solito qui?', opts:['a piedi','bici / monopattino','motorino','bus / tramvia','mi accompagnano in auto']},
-   ]},
- { id:'C', title:'C · Quando è buio', sub:'Parliamo di questa zona quando è buio.',
-   items:[
-    {k:'C1', code:'C1', t:'single', q:'Quando è buio, ti capita di stare in giro o spostarti in questa zona?', opts:['spesso','qualche volta','mai']},
-    {k:'C1b', t:'multi', q:'Perché no?', showIf:a=>a.C1==='mai', opts:['non ho motivo','non mi va','non posso','non mi sento sicuro/a','altro'], other:true},
-    {k:'C2', code:'C2', t:'multi', q:'Come ti sposti, di sera?', showIf:a=>a.C1&&a.C1!=='mai', opts:['a piedi','bici / monopattino','motorino','bus / tramvia','in auto con qualcuno']},
-    {k:'C3', code:'C3', t:'single', q:'Quando prendi i mezzi la sera, con chi sei?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), opts:['sempre solo/a','quasi sempre solo/a','dipende','quasi sempre con altri','sempre con altri'], stack:true},
-    {k:'C4', code:'C4', t:'map', q:'Ci sono fermate che eviti, o dove non ti senti tranquillo/a?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), hint:'Pin sulla fermata (nel prototipo il layer fermate non è caricato).', max:2, fields:[{k:'fermata',lbl:'Quale fermata'},{k:'perche',lbl:'Perché'}]},
-    {k:'C5', code:'C5', t:'map', q:'Ci sono posti in questa zona che eviti quando è buio?', op:'A chi non esce: “che eviteresti”.', hint:'Massimo 2.', max:2, fields:[{k:'cosa',lbl:'Cos’è'},{k:'perche',lbl:'Perché'}]},
+    {k:'C1', code:'C1', t:'single', q:'Ti capita di stare in giro o spostarti in questa zona?', opts:['spesso','qualche volta','mai']},
+    {k:'C1b', t:'multi', q:'Perché?', showIf:a=>a.C1==='mai', opts:['non ho motivo','non mi va','non posso','non mi sento sicuro/a','altro'], other:true},
+    {k:'C2', code:'C2', t:'multi', q:'Come ti sposti?', showIf:a=>a.C1&&a.C1!=='mai', opts:['a piedi','bici / monopattino','motorino','bus / tramvia','in auto con qualcuno']},
+    {k:'C3', code:'C3', t:'single', q:'Quando prendi i mezzi, con chi sei?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), opts:['sempre solo/a','quasi sempre solo/a','dipende','quasi sempre con altri','sempre con altri'], stack:true},
+    {k:'C4', code:'C4', t:'map', night:true, q:'Ci sono fermate che eviti o dove non ti senti tranquillo/a?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), hint:'Tocca la fermata sulla mappa (il layer fermate verrà aggiunto nella versione finale).', sheet:{title:'Una fermata che eviti', fields:[{k:'fermata',lbl:'Nome della fermata',t:'text'},{k:'perche',lbl:'Perché preferisci evitarla',t:'text'}]}},
+    {k:'C5a', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviti?', showIf:a=>a.C1&&a.C1!=='mai', hint:'Tocca la mappa per aggiungere un luogo.', sheet:{title:'Un posto che eviti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferisci evitarlo',t:'text'}]}},
+    {k:'C5b', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviteresti?', showIf:a=>a.C1==='mai', hint:'Tocca la mappa per aggiungere un luogo.', sheet:{title:'Un posto che eviteresti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferiresti evitarlo',t:'text'}]}},
     {k:'C6', code:'C6', t:'scale2', q:'In generale, quanto ti senti sicuro/a in questa zona…', rows:[{k:'C6_giorno',lbl:'…di giorno'},{k:'C6_buio',lbl:'…quando è buio'}], opts:['molto','abbastanza','poco','per nulla']},
    ]},
  { id:'D', title:'D · Domani', sub:'',
-   items:[
-    {k:'D1', code:'D1', t:'textarea', q:'Immagina questa zona tra 5 anni: cosa vorresti che ci fosse, o che fosse diverso?'},
-   ]},
+   items:[{k:'D1', code:'D1', t:'textarea', q:'Immagina questa zona tra 5 anni: cosa vorresti che ci fosse, o che fosse diverso?'}]},
  { id:'E', title:'E · Due cose su di te', sub:'',
    items:[
     {k:'eta', t:'number', q:'Età'},
     {k:'genere', t:'single', q:'Genere', opts:['ragazza','ragazzo','altro / preferisco non dire']},
-    {k:'vive', t:'single', q:'Vivi in questa zona (5–10 minuti a piedi)?', opts:['sì','in un’altra zona di Firenze','fuori Firenze']},
+    {k:'vive', t:'single', q:'Vivi in questa zona (20–30 minuti a piedi)?', opts:['sì','in un’altra zona di Firenze','fuori Firenze']},
     {k:'giorno', t:'single', q:'Di giorno sei', opts:['a scuola','lavoro','formazione / altro','niente di questo'], followIf:'a scuola', follow:{k:'scuola_zona', t:'text', lbl:'Zona della scuola (non il nome)'}},
    ]},
  { id:'fine', title:'Grazie!', sub:'', items:[{t:'end'}]},
 ];
 
 /* ---------- state ---------- */
-const A = {};           // answers
-let step = 0;
-const t0 = Date.now();
-const maps = {};        // k -> {map, markers:[]}
-let gpsPos = null;
+const A = {}; let step = 0; let t0 = null; const maps = {}; let gpsPos = null;
 
 /* ---------- auto data ---------- */
 function tick(){ const d=new Date(); document.getElementById('clock').textContent=d.toLocaleString('it-IT',{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-  const s=Math.floor((Date.now()-t0)/1000); document.getElementById('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+  const s=t0?Math.floor((Date.now()-t0)/1000):0; document.getElementById('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
 setInterval(tick,1000); tick();
 if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(p=>{ gpsPos=[p.coords.latitude,p.coords.longitude];
   document.getElementById('gps').textContent=gpsPos[0].toFixed(5)+', '+gpsPos[1].toFixed(5)+' (±'+Math.round(p.coords.accuracy)+' m)';
   document.getElementById('gpsdot').classList.add('on');
-  Object.values(maps).forEach(m=>m.map.setView(gpsPos,16));
+  Object.values(maps).forEach(m=>m.map.setView(gpsPos,15));
  }, ()=>{document.getElementById('gps').textContent='non disponibile'}, {enableHighAccuracy:true,timeout:10000}); }
 else document.getElementById('gps').textContent='non supportato';
 
@@ -193,62 +187,78 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 function render(){
   const sec=S[step]; const v=document.getElementById('view');
   document.getElementById('prog').style.width=(step/(S.length-1)*100)+'%';
-  document.getElementById('stepnum').textContent=(step+1)+' / '+S.length;
-  let h=`<h1 class="section-title">${esc(sec.title)}</h1><p class="section-sub">${esc(sec.sub)}</p>`;
+  document.getElementById('stepnum').textContent=step===0?'':(step+' / '+(S.length-1));
+  document.getElementById('meta').classList.toggle('hidden',step===0);
+  let h=sec.title?`<h1 class="section-title">${esc(sec.title)}</h1><p class="section-sub">${esc(sec.sub)}</p>`:'';
   for(const it of sec.items) h+=card(it);
   v.innerHTML=h;
   for(const it of sec.items) if(it.t==='map') initMap(it);
   applyVisibility();
   document.getElementById('back').disabled=step===0;
-  document.getElementById('next').textContent=step===S.length-2?'Concludi':(step===S.length-1?'Nuova compilazione':'Avanti');
+  document.getElementById('back').classList.toggle('hidden',step===0);
+  document.getElementById('next').textContent=step===0?'Iniziamo':(step===S.length-2?'Concludi':(step===S.length-1?'Nuova compilazione':'Avanti'));
   window.scrollTo({top:0});
 }
-function head(it){ return `<p class="q">${it.code?`<span class="code">${it.code}</span>`:''}${it.q}</p>${it.hint?`<p class="hint">${it.hint}</p>`:''}${it.op?`<p class="note-op"><b>Operatore:</b> ${it.op}</p>`:''}`; }
+function head(it){ return `<p class="q">${it.code?`<span class="code">${it.code}</span>`:''}${it.q}</p>${it.hint?`<p class="hint">${it.hint}</p>`:''}`; }
 function chips(k,opts,multi,cls=''){ const cur=A[k]; return `<div class="chips ${cls}" data-k="${k}" data-multi="${multi?1:0}">`+opts.map(o=>`<span class="chip ${multi?(cur||[]).includes(o):cur===o?'on':''}" data-v="${esc(o)}">${esc(o)}</span>`).join('')+`</div>`; }
+function photoHtml(k){ return `<div class="photo"><div class="thumb" id="th_${k}">${A[k+'_foto']?`<img src="${A[k+'_foto']}">`:'📷'}</div><div><label class="btn">Scatta foto<input type="file" accept="image/*" capture="environment" data-photo="${k}" hidden></label><div class="opt">facoltativa · non inquadrare persone</div></div></div>`; }
 function card(it){
   let b='';
   switch(it.t){
+    case 'intro': return `<div class="intro"><h1>Raccontaci il tuo quartiere</h1>
+      <p>Ciao! Con il progetto <b>Fioriture Civiche</b> vogliamo provare a immaginare, insieme a ragazzi e ragazze, il futuro di alcuni quartieri di Firenze:</p>
+      <div class="zones"><span>Isolotto</span><span>San Jacopino</span><span>Cascine</span><span>Ugnano-Mantignano</span></div>
+      <p>Ti va di raccontarci quali posti frequenti, quali eviti e cosa vorresti diverso? Le tue risposte ci aiuteranno a ripensare questi spazi insieme a chi li vive ogni giorno.</p>
+      <p><span class="tag">⏱ circa 5 minuti</span><span class="tag">🔒 anonimo</span></p>
+      <p class="hint" style="margin-top:14px">Vengono registrati automaticamente la posizione, la data/ora e la durata della compilazione.</p></div>`;
     case 'text': b=head(it)+`<input type="text" data-k="${it.k}" value="${esc(A[it.k])}">`; break;
     case 'number': b=head(it)+`<input type="number" inputmode="numeric" data-k="${it.k}" value="${esc(A[it.k])}" style="max-width:140px">`; break;
     case 'textarea': b=head(it)+`<textarea data-k="${it.k}">${esc(A[it.k])}</textarea>`; break;
+    case 'textphoto': b=head(it)+`<textarea data-k="${it.k}" placeholder="Qualche parola…">${esc(A[it.k])}</textarea>`+photoHtml(it.k); break;
     case 'single': case 'multi':
       b=head(it)+chips(it.k,it.opts,it.t==='multi',it.stack?'stack':'');
-      if(it.other) b+=`<div class="other ${otherOn(it)?'':'hidden'}" data-other="${it.k}"><input type="text" placeholder="${esc(it.otherLbl||'Specifica…')}" data-k="${it.k}_altro" value="${esc(A[it.k+'_altro'])}"></div>`;
-      if(it.follow) b+=`<div class="sub ${A[it.k]===it.followIf?'':'hidden'}" data-follow="${it.k}"><p class="lbl">${esc(it.follow.lbl)}</p><input type="${it.follow.t}" data-k="${it.follow.k}" value="${esc(A[it.follow.k])}" style="max-width:220px"></div>`;
+      if(it.other) b+=`<div class="other ${otherOn(it)?'':'hidden'}" data-other="${it.k}"><input type="text" placeholder="Specifica…" data-k="${it.k}_altro" value="${esc(A[it.k+'_altro'])}"></div>`;
+      if(it.follow) b+=`<div class="sub ${A[it.k]===it.followIf?'':'hidden'}" data-follow="${it.k}"><p class="lbl">${esc(it.follow.lbl)}</p><input type="${it.follow.t}" data-k="${it.follow.k}" value="${esc(A[it.follow.k])}" style="max-width:260px"></div>`;
       break;
-    case 'scale2':
-      b=head(it)+it.rows.map(r=>`<p class="lbl" style="margin-top:10px">${r.lbl}</p>`+chips(r.k,it.opts,false,'scale')).join(''); break;
-    case 'photo':
-      b=head(it)+`<div class="photo"><div class="thumb" id="th_${it.k}">${A[it.k]?`<img src="${A[it.k]}">`:'📷'}</div><label class="btn">Scatta foto<input type="file" accept="image/*" capture="environment" data-photo="${it.k}" hidden></label></div>`
-        +`<div class="sub">`+it.fields.map(f=>`<p class="lbl">${f.lbl}</p><input type="text" data-k="${f.k}" value="${esc(A[f.k])}" style="margin-bottom:8px">`).join('')+`</div>`; break;
+    case 'scale2': b=head(it)+it.rows.map(r=>`<p class="lbl" style="margin-top:10px">${r.lbl}</p>`+chips(r.k,it.opts,false,'scale')).join(''); break;
     case 'map':
-      const pins=A[it.k]||[];
-      b=head(it)+`<div class="map" id="map_${it.k}"><div class="ph">Mappa non disponibile (serve connessione).<br>Nel prototipo i pin si aggiungono con un tocco.</div></div>
-        <div class="mapbar"><span><b>${pins.length}</b> / ${it.max} pin</span><span>${gpsPos?'centrata sulla posizione attuale':'centro su Firenze Q4'}</span></div>
+      b=head(it)+`<div class="map ${it.night?'night':''}" id="map_${it.k}"><div class="ph">Mappa non disponibile (serve connessione).</div></div>
+        <div class="mapbar"><span><b>${(A[it.k]||[]).length}</b> luoghi segnati</span><span>${it.night?'🌙 vista notturna':''}</span></div>
         <div id="pins_${it.k}">${pinsHtml(it)}</div>`; break;
     case 'end':
-      b=`<div class="done">🌸</div><p style="text-align:center">Compilazione conclusa. Durata: <b>${document.getElementById('timer').textContent}</b></p>
+      b=`<div class="done">🌸</div><p style="text-align:center">Grazie! Le tue risposte sono state registrate.</p>
          <p class="hint" style="text-align:center">Anteprima dei dati raccolti (nel prototipo non vengono inviati).</p><pre>${esc(JSON.stringify(payload(),null,2))}</pre>
          <div style="text-align:center"><button class="btn" id="dl">Scarica JSON</button></div>`; break;
   }
   return `<div class="card" data-item="${it.k||''}">${b}</div>`;
 }
-function otherOn(it){ const v=A[it.k]; return it.t==='multi'?(v||[]).some(x=>/^altro|cosa specifica/.test(x)):/^altro|cosa specifica/.test(v||''); }
-function pinsHtml(it){ return (A[it.k]||[]).map((p,i)=>`<div class="pin"><span class="n">PIN ${i+1}</span><button class="x" data-rm="${it.k}:${i}" title="Rimuovi">✕</button>
-   <p class="hint" style="margin:6px 0 8px">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)}</p>`+it.fields.map(f=>`<p class="lbl">${f.lbl}</p><input type="text" data-pin="${it.k}:${i}:${f.k}" value="${esc(p[f.k])}" style="margin-bottom:8px">`).join('')+`</div>`).join(''); }
+function otherOn(it){ const v=A[it.k]; return it.t==='multi'?(v||[]).includes('altro'):v==='altro'; }
+function pinsHtml(it){ return (A[it.k]||[]).map((p,i)=>`<div class="pin"><span class="n">${i+1}</span><div class="t">${esc(p.tipo||p.fermata||'luogo')}<small>${esc(p.perche||'—')}</small></div><button data-edit="${it.k}:${i}" title="Modifica">✎</button><button data-rm="${it.k}:${i}" title="Rimuovi">✕</button></div>`).join(''); }
 
 function initMap(it){
   if(typeof L==='undefined') return;
   const el=document.getElementById('map_'+it.k); el.innerHTML='';
-  const map=L.map(el,{zoomControl:true,attributionControl:true}).setView(gpsPos||[43.7736,11.2135],15);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+  const map=L.map(el,{zoomControl:true}).setView(gpsPos||[43.7736,11.2135],14);
+  const url=it.night?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+  L.tileLayer(url,{maxZoom:19,attribution:'© OpenStreetMap © CARTO'}).addTo(map);
   const m={map,markers:[]}; maps[it.k]=m;
   const icon=i=>L.divIcon({className:'',html:`<div class="marker-icon"><span>${i}</span></div>`,iconSize:[26,26],iconAnchor:[13,26]});
-  const draw=()=>{ m.markers.forEach(x=>map.removeLayer(x)); m.markers=(A[it.k]||[]).map((p,i)=>L.marker([p.lat,p.lng],{icon:icon(i+1)}).addTo(map)); document.getElementById('pins_'+it.k).innerHTML=pinsHtml(it); el.parentElement.querySelector('.mapbar b').textContent=(A[it.k]||[]).length; };
-  if(gpsPos) L.circleMarker(gpsPos,{radius:7,color:'#2F3E9E',fillColor:'#2F3E9E',fillOpacity:.9}).addTo(map);
-  map.on('click',e=>{ A[it.k]=A[it.k]||[]; if(A[it.k].length>=it.max){ return; } A[it.k].push({lat:e.latlng.lat,lng:e.latlng.lng}); draw(); });
-  m.draw=draw; draw();
-  setTimeout(()=>map.invalidateSize(),50);
+  m.draw=()=>{ m.markers.forEach(x=>map.removeLayer(x)); m.markers=(A[it.k]||[]).map((p,i)=>L.marker([p.lat,p.lng],{icon:icon(i+1)}).addTo(map).on('click',()=>openSheet(it,i))); document.getElementById('pins_'+it.k).innerHTML=pinsHtml(it); el.parentElement.querySelector('.mapbar b').textContent=(A[it.k]||[]).length; };
+  if(gpsPos) L.circleMarker(gpsPos,{radius:7,color:it.night?'#fff':'#2F3E9E',fillColor:'#2F3E9E',fillOpacity:.9}).addTo(map);
+  map.on('click',e=>{ A[it.k]=A[it.k]||[]; A[it.k].push({lat:e.latlng.lat,lng:e.latlng.lng}); m.draw(); openSheet(it,A[it.k].length-1,true); });
+  m.draw(); setTimeout(()=>map.invalidateSize(),50);
+}
+
+/* pin sheet */
+function openSheet(it,i,isNew){
+  const p=A[it.k][i]; const sh=it.sheet;
+  const bg=document.createElement('div'); bg.className='sheet-bg';
+  bg.innerHTML=`<div class="sheet"><h3>${esc(sh.title)}</h3><p class="coords">${p.lat.toFixed(5)}, ${p.lng.toFixed(5)} · facoltativo</p>`+
+    sh.fields.map(f=>`<p class="lbl">${esc(f.lbl)}</p>`+(f.t==='select'?`<select data-f="${f.k}"><option value="">—</option>${f.opts.map(o=>`<option ${p[f.k]===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`:`<input type="text" data-f="${f.k}" value="${esc(p[f.k])}">`)+`<div style="height:10px"></div>`).join('')+
+    `<div class="actions"><button class="btn ghost" data-act="del">${isNew?'Annulla':'Rimuovi'}</button><button class="btn primary" data-act="ok">Salva</button></div></div>`;
+  bg.addEventListener('click',e=>{ if(e.target===bg){ close(true); return; } const a=e.target.dataset.act; if(a==='ok') close(true); if(a==='del'){ A[it.k].splice(i,1); close(false); } });
+  function close(save){ if(save) bg.querySelectorAll('[data-f]').forEach(x=>p[x.dataset.f]=x.value); bg.remove(); maps[it.k].draw(); }
+  document.body.appendChild(bg);
 }
 
 function applyVisibility(){
@@ -264,22 +274,20 @@ document.getElementById('view').addEventListener('click',e=>{
     if(it){ const o=document.querySelector(`[data-other="${k}"]`); if(o) o.classList.toggle('hidden',!otherOn(it)); const f=document.querySelector(`[data-follow="${k}"]`); if(f) f.classList.toggle('hidden',A[k]!==it.followIf); }
     applyVisibility(); return; }
   const rm=e.target.closest('[data-rm]'); if(rm){ const [k,i]=rm.dataset.rm.split(':'); A[k].splice(+i,1); maps[k]?maps[k].draw():render(); return; }
+  const ed=e.target.closest('[data-edit]'); if(ed){ const [k,i]=ed.dataset.edit.split(':'); openSheet(S[step].items.find(x=>x.k===k),+i); return; }
   if(e.target.id==='dl'){ const b=new Blob([JSON.stringify(payload(),null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='risposta_'+Date.now()+'.json'; a.click(); }
 });
-document.getElementById('view').addEventListener('input',e=>{
-  const t=e.target; if(t.dataset.k) A[t.dataset.k]=t.value;
-  if(t.dataset.pin){ const [k,i,f]=t.dataset.pin.split(':'); A[k][+i][f]=t.value; }
-});
+document.getElementById('view').addEventListener('input',e=>{ const t=e.target; if(t.dataset.k) A[t.dataset.k]=t.value; });
 document.getElementById('view').addEventListener('change',e=>{
-  const t=e.target; if(t.dataset.photo&&t.files[0]){ const r=new FileReader(); r.onload=()=>{ A[t.dataset.photo]=r.result; document.getElementById('th_'+t.dataset.photo).innerHTML=`<img src="${r.result}">`; }; r.readAsDataURL(t.files[0]); }
+  const t=e.target; if(t.dataset.photo&&t.files[0]){ const r=new FileReader(); r.onload=()=>{ A[t.dataset.photo+'_foto']=r.result; document.getElementById('th_'+t.dataset.photo).innerHTML=`<img src="${r.result}">`; }; r.readAsDataURL(t.files[0]); }
 });
 document.getElementById('next').onclick=()=>{
   if(step===S.length-1){ location.reload(); return; }
-  if(step===0 && A.esito && A.esito!=='risponde'){ step=S.length-1; render(); return; }  // rifiuto → chiudi
+  if(step===0) t0=Date.now();
   step=Math.min(S.length-1,step+1); render(); };
 document.getElementById('back').onclick=()=>{ step=Math.max(0,step-1); render(); };
 
-function payload(){ return { auto:{ gps:gpsPos, timestamp:new Date(t0).toISOString(), durata_s:Math.floor((Date.now()-t0)/1000) }, risposte:Object.fromEntries(Object.entries(A).map(([k,v])=>[k,(typeof v==='string'&&v.startsWith('data:image'))?'[foto allegata]':v])) }; }
+function payload(){ return { auto:{ gps:gpsPos, inizio:t0?new Date(t0).toISOString():null, durata_s:t0?Math.floor((Date.now()-t0)/1000):0 }, risposte:Object.fromEntries(Object.entries(A).map(([k,v])=>[k,(typeof v==='string'&&v.startsWith('data:image'))?'[foto allegata]':v])) }; }
 
 render();
 </script>
