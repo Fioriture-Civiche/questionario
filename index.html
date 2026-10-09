@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, interactive-widget=resizes-content">
 <title>Raccontaci il tuo quartiere — Fioriture Civiche</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -90,6 +90,9 @@
   .map.night .leaflet-tile-pane{filter:invert(1) hue-rotate(190deg) brightness(.8) contrast(.95) saturate(.45)}
   .map.night .leaflet-control-attribution{background:rgba(22,26,42,.8);color:#aab}
   .map .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
+  .maplock{position:absolute;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(31,35,64,.28);cursor:pointer}
+  .maplock span{background:#fff;color:#1F2340;font-weight:600;font-size:14px;padding:10px 16px;border-radius:99px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+  .mapunlock{position:absolute;top:10px;right:10px;z-index:500;background:#fff;color:#1F2340;border:0;border-radius:99px;padding:7px 12px;font-size:13px;font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer}
   .mapbar{display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px;font-size:13px;color:var(--muted)}
   .pin{background:var(--cream);border-radius:10px;padding:10px 12px;margin-top:8px;display:flex;gap:10px;align-items:center}
   .pin .n{background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;flex:none}
@@ -101,7 +104,9 @@
 
   /* pin sheet */
   .sheet-bg{position:fixed;inset:0;background:rgba(31,35,64,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
-  .sheet{background:#fff;width:100%;max-width:720px;border-radius:18px 18px 0 0;padding:18px 16px 24px;box-shadow:0 -4px 24px rgba(0,0,0,.2)}
+  .sheet{background:#fff;color:#1F2340;width:100%;max-width:720px;border-radius:18px 18px 0 0;padding:18px 16px 24px;box-shadow:0 -4px 24px rgba(0,0,0,.2)}
+  .sheet .lbl{color:#1F2340}.sheet input,.sheet select{background:#fff;color:#1F2340;border-color:#E4E1DA}
+  .sheet .btn.ghost{background:#fff;color:#6B7085;border-color:#E4E1DA}
   .sheet h3{margin:0 0 4px;color:var(--blue);font-size:17px}
   .sheet .coords{font-size:12px;color:var(--muted);margin:0 0 12px}
   .sheet .actions{display:flex;gap:10px;margin-top:14px}
@@ -158,7 +163,7 @@ const S = [
    ]},
  { id:'B', title:'B · Nella tua zona', sub:'“Zona” = circa 20–30 minuti a piedi da qui.',
    items:[
-    {k:'B1', code:'B1', t:'map', q:'A circa 20–30 minuti a piedi da qui, ci sono altri posti dove vai spesso?', hint:'Tocca la mappa per aggiungere un luogo.', sheet:{title:'Un posto dove vai spesso', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché ti piace andarci',t:'text'}]}},
+    {k:'B1', code:'B1', t:'map', q:'A circa 20–30 minuti a piedi da qui, ci sono altri posti dove vai spesso?', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto dove vai spesso', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché ti piace andarci',t:'text'}]}},
    ]},
  { id:'C', title:'C · Nelle ore serali', sub:'Pensa adesso alla tua esperienza in questa zona nelle ore serali…',
    items:[
@@ -166,9 +171,9 @@ const S = [
     {k:'C1b', t:'multi', q:'Perché?', showIf:a=>a.C1==='mai', opts:['non ho motivo','non mi va','non posso','non mi sento sicuro/a','altro'], other:true},
     {k:'C2', code:'C2', t:'multi', q:'Come ti sposti?', showIf:a=>a.C1&&a.C1!=='mai', opts:['a piedi','bici / monopattino','motorino','bus / tramvia','in auto con qualcuno']},
     {k:'C3', code:'C3', t:'single', q:'Quando prendi i mezzi, con chi sei?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), opts:['sempre solo/a','quasi sempre solo/a','dipende','quasi sempre con altri','sempre con altri'], stack:true},
-    {k:'C4', code:'C4', t:'map', night:true, q:'Ci sono fermate che eviti o dove non ti senti tranquillo/a?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), hint:'Tocca la fermata sulla mappa (il layer fermate verrà aggiunto nella versione finale).', sheet:{title:'Una fermata che eviti', fields:[{k:'fermata',lbl:'Nome della fermata',t:'text'},{k:'perche',lbl:'Perché preferisci evitarla',t:'text'}]}},
-    {k:'C5a', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviti?', showIf:a=>a.C1&&a.C1!=='mai', hint:'Tocca la mappa per aggiungere un luogo.', sheet:{title:'Un posto che eviti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferisci evitarlo',t:'text'}]}},
-    {k:'C5b', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviteresti?', showIf:a=>a.C1==='mai', hint:'Tocca la mappa per aggiungere un luogo.', sheet:{title:'Un posto che eviteresti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferiresti evitarlo',t:'text'}]}},
+    {k:'C4', code:'C4', t:'map', night:true, q:'Ci sono fermate che eviti o dove non ti senti tranquillo/a?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), hint:'Attiva la mappa, poi tocca la fermata (il layer fermate verrà aggiunto nella versione finale).', sheet:{title:'Una fermata che eviti', fields:[{k:'fermata',lbl:'Nome della fermata',t:'text'},{k:'perche',lbl:'Perché preferisci evitarla',t:'text'}]}},
+    {k:'C5a', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviti?', showIf:a=>a.C1&&a.C1!=='mai', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto che eviti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferisci evitarlo',t:'text'}]}},
+    {k:'C5b', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviteresti?', showIf:a=>a.C1==='mai', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto che eviteresti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferiresti evitarlo',t:'text'}]}},
     {k:'C6', code:'C6', t:'scale2', q:'In generale, quanto ti senti sicuro/a in questa zona…', rows:[{k:'C6_giorno',lbl:'…di giorno'},{k:'C6_buio',lbl:'…quando è buio'}], opts:['molto','abbastanza','poco','per nulla']},
    ]},
  { id:'D', title:'D · Domani', sub:'',
@@ -254,10 +259,10 @@ function card(it){
       <div class="consent"><p><b>Prima di iniziare.</b> Il questionario è pensato per essere compilato <b>nei luoghi che vivi</b> e che vorresti ripensare: per questo ti chiediamo di condividere la tua posizione (GPS), che ci serve a collegare le risposte al posto in cui ti trovi e a centrare le mappe. Se preferisci non condividerla, basta negare il permesso quando il telefono te lo chiede: puoi compilare il questionario lo stesso.</p>
       <p>Il questionario è anonimo: non ti chiediamo nome né contatti. Oltre alle risposte vengono registrate la data e l’ora e le eventuali foto che decidi di scattare. I dati servono solo alla ricerca di Fioriture Civiche e vengono usati in forma aggregata.</p>
       <p>Toccando <b>Iniziamo</b> confermi di aver letto l’<a href="privacy.html" target="_blank" rel="noopener">informativa sulla privacy</a> e accetti che le tue risposte vengano usate per la ricerca. Puoi interrompere quando vuoi.</p></div></div>`;
-    case 'text': b=head(it)+`<input type="text" data-k="${it.k}" value="${esc(A[it.k])}">`; break;
+    case 'text': b=head(it)+`<input type="text" enterkeyhint="done" data-k="${it.k}" value="${esc(A[it.k])}">`; break;
     case 'number': b=head(it)+`<input type="number" inputmode="numeric" data-k="${it.k}" value="${esc(A[it.k])}" style="max-width:140px">`; break;
-    case 'textarea': b=head(it)+`<textarea data-k="${it.k}">${esc(A[it.k])}</textarea>`; break;
-    case 'textphoto': b=head(it)+`<textarea data-k="${it.k}" placeholder="Qualche parola…">${esc(A[it.k])}</textarea>`+photoHtml(it.k); break;
+    case 'textarea': b=head(it)+`<textarea data-k="${it.k}" enterkeyhint="done">${esc(A[it.k])}</textarea>`; break;
+    case 'textphoto': b=head(it)+`<textarea data-k="${it.k}" enterkeyhint="done" placeholder="Qualche parola…">${esc(A[it.k])}</textarea>`+photoHtml(it.k); break;
     case 'single': case 'multi':
       b=head(it)+chips(it.k,it.opts,it.t==='multi',it.stack?'radio':'');
       if(it.other) b+=`<div class="other ${otherOn(it)?'':'hidden'}" data-other="${it.k}"><input type="text" placeholder="Specifica…" data-k="${it.k}_altro" value="${esc(A[it.k+'_altro'])}"></div>`;
@@ -281,7 +286,12 @@ function pinsHtml(it){ return (A[it.k]||[]).map((p,i)=>`<div class="pin"><span c
 function initMap(it){
   if(typeof L==='undefined') return;
   const el=document.getElementById('map_'+it.k); el.innerHTML='';
-  const map=L.map(el,{zoomControl:true}).setView(gpsPos||[43.7736,11.2135],14);
+  const map=L.map(el,{zoomControl:true,dragging:false,touchZoom:false,scrollWheelZoom:false,doubleClickZoom:false,tap:false}).setView(gpsPos||[43.7736,11.2135],14);
+  const lock=document.createElement('div'); lock.className='maplock'; lock.innerHTML='<span>Tocca per usare la mappa</span>';
+  const unlock=document.createElement('button'); unlock.className='mapunlock hidden'; unlock.textContent='✓ Fatto'; unlock.type='button';
+  el.appendChild(lock); el.appendChild(unlock); L.DomEvent.disableClickPropagation(lock); L.DomEvent.disableClickPropagation(unlock);
+  lock.addEventListener('click',()=>{ lock.classList.add('hidden'); unlock.classList.remove('hidden'); map.dragging.enable(); map.touchZoom.enable(); map.doubleClickZoom.enable(); if(map.tap) map.tap.enable(); });
+  unlock.addEventListener('click',e=>{ e.stopPropagation(); unlock.classList.add('hidden'); lock.classList.remove('hidden'); map.dragging.disable(); map.touchZoom.disable(); map.doubleClickZoom.disable(); });
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
   const m={map,markers:[]}; maps[it.k]=m;
   const icon=i=>L.divIcon({className:'',html:`<div class="marker-icon"><span>${i}</span></div>`,iconSize:[26,26],iconAnchor:[13,26]});
@@ -320,6 +330,8 @@ document.getElementById('view').addEventListener('click',e=>{
   if(e.target.id==='retry'){ send(); return; }
   if(e.target.id==='dl'){ const b=new Blob([JSON.stringify(payload(),null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='risposta_'+Date.now()+'.json'; a.click(); }
 });
+document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.matches('textarea,input[type=text],input[type=number]')){ e.preventDefault(); e.target.blur(); } });
+document.addEventListener('focusin',e=>{ if(e.target.matches('textarea,input')) setTimeout(()=>e.target.scrollIntoView({block:'center',behavior:'smooth'}),250); });
 document.getElementById('view').addEventListener('input',e=>{ const t=e.target; if(t.dataset.k) A[t.dataset.k]=t.value; });
 document.getElementById('view').addEventListener('change',e=>{
   const t=e.target; if(t.dataset.photo&&t.files[0]){ const r=new FileReader(); r.onload=()=>{ A[t.dataset.photo+'_foto']=r.result; document.getElementById('th_'+t.dataset.photo).innerHTML=`<img src="${r.result}">`; }; r.readAsDataURL(t.files[0]); }
