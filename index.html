@@ -207,12 +207,14 @@ const A = {}; let step = 0; let t0 = null; const maps = {}; let gpsPos = null;
 function tick(){ const d=new Date(); document.getElementById('clock').textContent=d.toLocaleString('it-IT',{weekday:'short',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
   const s=t0?Math.floor((Date.now()-t0)/1000):0; document.getElementById('timer').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
 setInterval(tick,1000); tick();
-if(navigator.geolocation){ navigator.geolocation.getCurrentPosition(p=>{ gpsPos=[p.coords.latitude,p.coords.longitude];
-  document.getElementById('gps').textContent=gpsPos[0].toFixed(5)+', '+gpsPos[1].toFixed(5)+' (±'+Math.round(p.coords.accuracy)+' m)';
-  document.getElementById('gpsdot').classList.add('on');
-  Object.values(maps).forEach(m=>m.map.setView(gpsPos,15));
- }, ()=>{document.getElementById('gps').textContent='non disponibile'}, {enableHighAccuracy:true,timeout:10000}); }
-else document.getElementById('gps').textContent='non supportato';
+function askGps(){
+  if(!navigator.geolocation){ document.getElementById('gps').textContent='non supportato'; return; }
+  navigator.geolocation.getCurrentPosition(p=>{ gpsPos=[p.coords.latitude,p.coords.longitude];
+    document.getElementById('gps').textContent=gpsPos[0].toFixed(5)+', '+gpsPos[1].toFixed(5)+' (±'+Math.round(p.coords.accuracy)+' m)';
+    document.getElementById('gpsdot').classList.add('on');
+    Object.values(maps).forEach(m=>m.map.setView(gpsPos,15));
+  }, ()=>{ document.getElementById('gps').textContent='non disponibile'; }, {enableHighAccuracy:true,timeout:10000});
+}
 
 /* ---------- render ---------- */
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -324,7 +326,7 @@ document.getElementById('view').addEventListener('change',e=>{
 });
 document.getElementById('next').onclick=()=>{
   if(step===S.length-1){ location.reload(); return; }
-  if(step===0) t0=Date.now();
+  if(step===0){ t0=Date.now(); askGps(); }
   step=Math.min(S.length-1,step+1); render();
   if(step===S.length-1) send(); };
 document.getElementById('back').onclick=()=>{ step=Math.max(0,step-1); render(); };
