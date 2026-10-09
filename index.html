@@ -144,10 +144,13 @@
   <div id="view"></div>
 </main>
 
-<nav><div class="in">
+<nav><div class="in" id="navmain">
   <button class="btn ghost" id="back">Indietro</button>
   <span class="spacer"></span>
   <button class="btn primary" id="next">Avanti</button>
+</div><div class="in hidden" id="navtyping">
+  <span class="spacer"></span>
+  <button class="btn" id="done" type="button">✓ Fatto</button>
 </div></nav>
 
 <script>
@@ -331,7 +334,11 @@ document.getElementById('view').addEventListener('click',e=>{
   if(e.target.id==='dl'){ const b=new Blob([JSON.stringify(payload(),null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='risposta_'+Date.now()+'.json'; a.click(); }
 });
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.matches('textarea,input[type=text],input[type=number]')){ e.preventDefault(); e.target.blur(); } });
-document.addEventListener('focusin',e=>{ if(e.target.matches('textarea,input')) setTimeout(()=>e.target.scrollIntoView({block:'center',behavior:'smooth'}),250); });
+const isField=el=>el&&el.matches&&el.matches('textarea,input[type=text],input[type=number]')&&!el.closest('.sheet');
+document.addEventListener('focusin',e=>{ if(isField(e.target)){ document.getElementById('navmain').classList.add('hidden'); document.getElementById('navtyping').classList.remove('hidden'); setTimeout(()=>e.target.scrollIntoView({block:'center',behavior:'smooth'}),250); } });
+document.addEventListener('focusout',e=>{ if(isField(e.target)) setTimeout(()=>{ if(!isField(document.activeElement)){ document.getElementById('navtyping').classList.add('hidden'); document.getElementById('navmain').classList.remove('hidden'); } },100); });
+document.getElementById('done').addEventListener('mousedown',e=>e.preventDefault());
+document.getElementById('done').addEventListener('click',()=>{ if(document.activeElement) document.activeElement.blur(); });
 document.getElementById('view').addEventListener('input',e=>{ const t=e.target; if(t.dataset.k) A[t.dataset.k]=t.value; });
 document.getElementById('view').addEventListener('change',e=>{
   const t=e.target; if(t.dataset.photo&&t.files[0]){ const r=new FileReader(); r.onload=()=>{ A[t.dataset.photo+'_foto']=r.result; document.getElementById('th_'+t.dataset.photo).innerHTML=`<img src="${r.result}">`; }; r.readAsDataURL(t.files[0]); }
