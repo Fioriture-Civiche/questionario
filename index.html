@@ -14,7 +14,12 @@
     --blue:#2F3E9E; --blue-soft:#DCE1F6;
     --cream:#F3EFE8; --paper:#FFFFFF; --ink:#1F2340; --muted:#6B7085; --line:#E4E1DA;
     --ok:#2E8B57; --radius:14px;
+    --q:#2F3E9E; --nav:rgba(243,239,232,.95); --chipbg:#fff;
   }
+  body.night{--cream:#14182A;--paper:#1F2340;--ink:#F3EFE8;--muted:#AEB3CC;--line:#363D60;--blue-soft:#2F3E9E;--q:#BFC9FF;--nav:rgba(20,24,42,.95);--chipbg:#262B4A}
+  body{transition:background .5s}
+  #view{transition:opacity .22s ease}
+  #view.fading{opacity:0}
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--cream);color:var(--ink);font-family:Poppins,system-ui,sans-serif;font-size:16px;line-height:1.45}
   button,input,textarea,select{font:inherit;color:inherit}
@@ -38,24 +43,26 @@
   .section-sub{color:var(--muted);font-size:14px;margin:0 0 18px}
 
   .card{background:var(--paper);border-radius:var(--radius);padding:18px 16px;margin-bottom:14px;border:1px solid var(--line)}
-  .q{font-weight:600;font-size:17px;color:var(--blue);margin:0 0 4px}
-  .q .code{display:inline-block;background:var(--blue-soft);color:var(--blue);font-size:12px;font-weight:700;padding:2px 7px;border-radius:6px;margin-right:8px;vertical-align:middle}
+  .q{font-weight:600;font-size:17px;color:var(--q);margin:0 0 4px}
+  .q .code{display:inline-block;background:var(--blue-soft);color:var(--q);font-size:12px;font-weight:700;padding:2px 7px;border-radius:6px;margin-right:8px;vertical-align:middle}
   .hint{font-size:13px;color:var(--muted);margin:0 0 12px}
 
   .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:9px 14px;cursor:pointer;user-select:none;font-size:15px;transition:all .12s;max-width:100%;overflow-wrap:anywhere}
+  .chip{border:1.5px solid var(--line);background:var(--chipbg);border-radius:99px;padding:9px 14px;cursor:pointer;user-select:none;font-size:15px;transition:all .12s;max-width:100%;overflow-wrap:anywhere}
   .chip:active{transform:scale(.97)}
   .chip.on{background:var(--blue);border-color:var(--blue);color:#fff}
-  .chips.stack{flex-direction:column}.chips.stack .chip{border-radius:10px;text-align:left}
-  .chips.scale{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-  .chips.scale .chip{text-align:center;min-width:0;padding:9px 4px;font-size:14px;border-radius:10px;overflow-wrap:anywhere}
-  @media (max-width:440px){ .chips.scale{grid-template-columns:repeat(2,1fr)} }
+  .chips.radio{flex-direction:column;gap:6px}
+  .chips.radio .chip{border-radius:10px;text-align:left;padding:10px 14px 10px 42px;position:relative}
+  .chips.radio .chip::before{content:'';position:absolute;left:14px;top:50%;width:16px;height:16px;margin-top:-9px;border-radius:50%;border:2px solid var(--muted);background:transparent}
+  .chips.radio .chip.on::before{border-color:#fff;background:#fff;box-shadow:inset 0 0 0 4px var(--blue)}
 
-  input[type=text],input[type=number],textarea,select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;outline:none}
+  input[type=text],input[type=number],textarea,select{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--chipbg);outline:none}
   input:focus,textarea:focus,select:focus{border-color:var(--blue)}
   textarea{min-height:76px;resize:vertical}
   .sub{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
   .lbl{font-size:13px;font-weight:600;color:var(--ink);margin:0 0 6px}
+  body.night .pin{background:#262B4A}
+  body.night .progress{background:var(--paper)}
   .other{margin-top:10px}
 
   /* intro */
@@ -100,9 +107,9 @@
   .sheet .actions{display:flex;gap:10px;margin-top:14px}
   .sheet .actions .btn{flex:1;text-align:center}
 
-  nav{position:fixed;bottom:0;left:0;right:0;background:rgba(243,239,232,.95);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:20}
+  nav{position:fixed;bottom:0;left:0;right:0;background:var(--nav);backdrop-filter:blur(6px);border-top:1px solid var(--line);z-index:20}
   nav .in{max-width:720px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;align-items:center}
-  .btn{border:1.5px solid var(--blue);background:#fff;color:var(--blue);border-radius:99px;padding:11px 20px;font-weight:600;cursor:pointer;line-height:1.2;white-space:nowrap}
+  .btn{border:1.5px solid var(--blue);background:var(--chipbg);color:var(--q);border-radius:99px;padding:11px 20px;font-weight:600;cursor:pointer;line-height:1.2;white-space:nowrap}
   .btn.primary{background:var(--red);border-color:var(--red);color:#fff;flex:1}
   .btn.ghost{border-color:var(--line);color:var(--muted)}
   .btn:disabled{opacity:.4;cursor:default}
@@ -160,7 +167,7 @@ const S = [
     {k:'C2', code:'C2', t:'multi', q:'Come ti sposti?', showIf:a=>a.C1&&a.C1!=='mai', opts:['a piedi','bici / monopattino','motorino','bus / tramvia','in auto con qualcuno']},
     {k:'C3', code:'C3', t:'single', q:'Quando prendi i mezzi, con chi sei?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), opts:['sempre solo/a','quasi sempre solo/a','dipende','quasi sempre con altri','sempre con altri'], stack:true},
     {k:'C4', code:'C4', t:'map', night:true, q:'Ci sono fermate che eviti o dove non ti senti tranquillo/a?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), hint:'Tocca la fermata sulla mappa (il layer fermate verrà aggiunto nella versione finale).', sheet:{title:'Una fermata che eviti', fields:[{k:'fermata',lbl:'Nome della fermata',t:'text'},{k:'perche',lbl:'Perché preferisci evitarla',t:'text'}]}},
-    {k:'C5a', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviti?', showIf:a=>a.C1&&a.C1!=='mai', hint:'Tocca la mappa per aggiungere un luogo.', sheet:{title:'Un posto che eviti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI.filter(x=>x!=='fermata')},{k:'perche',lbl:'Perché preferisci evitarlo',t:'text'}]}},
+    {k:'C5a', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviti?', showIf:a=>a.C1&&a.C1!=='mai', hint:'Tocca la mappa per aggiungere un luogo.', sheet:{title:'Un posto che eviti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferisci evitarlo',t:'text'}]}},
     {k:'C5b', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviteresti?', showIf:a=>a.C1==='mai', hint:'Tocca la mappa per aggiungere un luogo.', sheet:{title:'Un posto che eviteresti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferiresti evitarlo',t:'text'}]}},
     {k:'C6', code:'C6', t:'scale2', q:'In generale, quanto ti senti sicuro/a in questa zona…', rows:[{k:'C6_giorno',lbl:'…di giorno'},{k:'C6_buio',lbl:'…quando è buio'}], opts:['molto','abbastanza','poco','per nulla']},
    ]},
@@ -176,6 +183,22 @@ const S = [
    ]},
  { id:'fine', title:'Grazie!', sub:'', items:[{t:'end'}]},
 ];
+
+/* ---------- invio dati ---------- */
+const ENDPOINT = ''; // URL della Web App Apps Script (vuoto = solo anteprima, nessun invio)
+let sendState = null; // null | 'sending' | 'ok' | 'error'
+function payloadFull(){ return { auto:{ consenso:!!t0, gps:gpsPos, inizio:t0?new Date(t0).toISOString():null, durata_s:t0?Math.floor((Date.now()-t0)/1000):0, ua:navigator.userAgent }, risposte:A }; }
+async function send(){
+  if(!ENDPOINT){ sendState=null; return; }
+  sendState='sending'; renderSendState();
+  try{ await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payloadFull())}); sendState='ok'; }
+  catch(e){ sendState='error'; try{ const q=JSON.parse(localStorage.getItem('fc_queue')||'[]'); q.push(payloadFull()); localStorage.setItem('fc_queue',JSON.stringify(q)); }catch(_){} }
+  renderSendState();
+}
+function renderSendState(){ const el=document.getElementById('sendstate'); if(!el) return;
+  el.innerHTML = sendState==='sending'?'<span class="hint">Invio in corso…</span>'
+    : sendState==='ok'?'<span class="hint" style="color:var(--ok)">✓ Risposte inviate.</span>'
+    : sendState==='error'?'<span class="hint" style="color:var(--red)">Invio non riuscito: risposte salvate sul dispositivo. <button class="btn" id="retry" style="padding:6px 14px;font-size:13px">Riprova</button></span>' : ''; }
 
 /* ---------- state ---------- */
 const A = {}; let step = 0; let t0 = null; const maps = {}; let gpsPos = null;
@@ -194,14 +217,20 @@ else document.getElementById('gps').textContent='non supportato';
 /* ---------- render ---------- */
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function render(){
+  const v=document.getElementById('view');
+  v.classList.add('fading');
+  setTimeout(()=>{ renderNow(); v.classList.remove('fading'); },200);
+}
+function renderNow(){
   const sec=S[step]; const v=document.getElementById('view');
+  document.body.classList.toggle('night',sec.id==='C');
   document.getElementById('prog').style.width=(step/(S.length-1)*100)+'%';
   document.getElementById('stepnum').textContent=step===0?'':(step+' / '+(S.length-1));
-  document.getElementById('meta').classList.toggle('hidden',step===0);
   let h=sec.title?`<h1 class="section-title">${esc(sec.title)}</h1><p class="section-sub">${esc(sec.sub)}</p>`:'';
   for(const it of sec.items) h+=card(it);
   v.innerHTML=h;
   for(const it of sec.items) if(it.t==='map') initMap(it);
+  renderSendState();
   applyVisibility();
   document.getElementById('back').disabled=step===0;
   document.getElementById('back').classList.toggle('hidden',step===0);
@@ -226,17 +255,17 @@ function card(it){
     case 'textarea': b=head(it)+`<textarea data-k="${it.k}">${esc(A[it.k])}</textarea>`; break;
     case 'textphoto': b=head(it)+`<textarea data-k="${it.k}" placeholder="Qualche parola…">${esc(A[it.k])}</textarea>`+photoHtml(it.k); break;
     case 'single': case 'multi':
-      b=head(it)+chips(it.k,it.opts,it.t==='multi',it.stack?'stack':'');
+      b=head(it)+chips(it.k,it.opts,it.t==='multi',it.stack?'radio':'');
       if(it.other) b+=`<div class="other ${otherOn(it)?'':'hidden'}" data-other="${it.k}"><input type="text" placeholder="Specifica…" data-k="${it.k}_altro" value="${esc(A[it.k+'_altro'])}"></div>`;
       if(it.follow) b+=`<div class="sub ${A[it.k]===it.followIf?'':'hidden'}" data-follow="${it.k}"><p class="lbl">${esc(it.follow.lbl)}</p><input type="${it.follow.t}" data-k="${it.follow.k}" value="${esc(A[it.follow.k])}" style="max-width:260px"></div>`;
       break;
-    case 'scale2': b=head(it)+it.rows.map(r=>`<p class="lbl" style="margin-top:10px">${r.lbl}</p>`+chips(r.k,it.opts,false,'scale')).join(''); break;
+    case 'scale2': b=head(it)+it.rows.map(r=>`<p class="lbl" style="margin-top:10px">${r.lbl}</p>`+chips(r.k,it.opts,false,'radio')).join(''); break;
     case 'map':
       b=head(it)+`<div class="map ${it.night?'night':''}" id="map_${it.k}"><div class="ph">Mappa non disponibile (serve connessione).</div></div>
         <div class="mapbar"><span><b>${(A[it.k]||[]).length}</b> luoghi segnati</span><span>${it.night?'🌙 vista notturna':''}</span></div>
         <div id="pins_${it.k}">${pinsHtml(it)}</div>`; break;
     case 'end':
-      b=`<div class="done">🌸</div><p style="text-align:center">Grazie! Le tue risposte sono state registrate.</p>
+      b=`<div class="done">🌸</div><p style="text-align:center">Grazie! Le tue risposte sono state registrate.</p><div id="sendstate" style="text-align:center;margin-bottom:10px"></div>
          <p class="hint" style="text-align:center">Anteprima dei dati raccolti (nel prototipo non vengono inviati).</p><pre>${esc(JSON.stringify(payload(),null,2))}</pre>
          <div style="text-align:center"><button class="btn" id="dl">Scarica JSON</button></div>`; break;
   }
@@ -284,6 +313,7 @@ document.getElementById('view').addEventListener('click',e=>{
     applyVisibility(); return; }
   const rm=e.target.closest('[data-rm]'); if(rm){ const [k,i]=rm.dataset.rm.split(':'); A[k].splice(+i,1); maps[k]?maps[k].draw():render(); return; }
   const ed=e.target.closest('[data-edit]'); if(ed){ const [k,i]=ed.dataset.edit.split(':'); openSheet(S[step].items.find(x=>x.k===k),+i); return; }
+  if(e.target.id==='retry'){ send(); return; }
   if(e.target.id==='dl'){ const b=new Blob([JSON.stringify(payload(),null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='risposta_'+Date.now()+'.json'; a.click(); }
 });
 document.getElementById('view').addEventListener('input',e=>{ const t=e.target; if(t.dataset.k) A[t.dataset.k]=t.value; });
@@ -293,7 +323,8 @@ document.getElementById('view').addEventListener('change',e=>{
 document.getElementById('next').onclick=()=>{
   if(step===S.length-1){ location.reload(); return; }
   if(step===0) t0=Date.now();
-  step=Math.min(S.length-1,step+1); render(); };
+  step=Math.min(S.length-1,step+1); render();
+  if(step===S.length-1) send(); };
 document.getElementById('back').onclick=()=>{ step=Math.max(0,step-1); render(); };
 
 function payload(){ return { auto:{ consenso:!!t0, gps:gpsPos, inizio:t0?new Date(t0).toISOString():null, durata_s:t0?Math.floor((Date.now()-t0)/1000):0 }, risposte:Object.fromEntries(Object.entries(A).map(([k,v])=>[k,(typeof v==='string'&&v.startsWith('data:image'))?'[foto allegata]':v])) }; }
