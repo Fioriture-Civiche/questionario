@@ -185,7 +185,7 @@ const S = [
 ];
 
 /* ---------- invio dati ---------- */
-const ENDPOINT = ''; // URL della Web App Apps Script (vuoto = solo anteprima, nessun invio)
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzvc6nK2yR-ANIYD9yMgwBzTX_hqGYR_jEgXlgmQSb4NEvI9b7pHucqQW1ou7lp7MU1Fg/exec'; // URL della Web App Apps Script (vuoto = solo anteprima, nessun invio)
 let sendState = null; // null | 'sending' | 'ok' | 'error'
 function payloadFull(){ return { auto:{ consenso:!!t0, gps:gpsPos, inizio:t0?new Date(t0).toISOString():null, durata_s:t0?Math.floor((Date.now()-t0)/1000):0, ua:navigator.userAgent }, risposte:A }; }
 async function send(){
