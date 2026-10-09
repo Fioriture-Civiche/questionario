@@ -243,7 +243,7 @@ function renderNow(){
   renderSendState();
   applyVisibility();
   document.getElementById('back').disabled=step===0;
-  document.getElementById('back').classList.toggle('hidden',step===0);
+  document.getElementById('back').classList.toggle('hidden',step===0||step===S.length-1);
   document.getElementById('next').textContent=step===0?'Iniziamo':(step===S.length-2?'Concludi':(step===S.length-1?'Nuova compilazione':'Avanti'));
   window.scrollTo({top:0});
 }
@@ -277,9 +277,8 @@ function card(it){
         <div class="mapbar"><span><b>${(A[it.k]||[]).length}</b> luoghi segnati</span><span>${it.night?'🌙 vista notturna':''}</span></div>
         <div id="pins_${it.k}">${pinsHtml(it)}</div>`; break;
     case 'end':
-      b=`<div class="done">🌸</div><p style="text-align:center">Grazie! Le tue risposte sono state registrate.</p><div id="sendstate" style="text-align:center;margin-bottom:10px"></div>
-         <p class="hint" style="text-align:center">Anteprima dei dati raccolti (nel prototipo non vengono inviati).</p><pre>${esc(JSON.stringify(payload(),null,2))}</pre>
-         <div style="text-align:center"><button class="btn" id="dl">Scarica JSON</button></div>`; break;
+      b=`<div class="done">🌸</div><p style="text-align:center;font-weight:600">Grazie! Le tue risposte sono state registrate.</p><div id="sendstate" style="text-align:center;margin-bottom:10px"></div>
+         <p class="hint" style="text-align:center">Le risposte di tutti e tutte formeranno una mappa dei quartieri vista con gli occhi di ragazzi e ragazze.</p>`; break;
   }
   return `<div class="card" data-item="${it.k||''}">${b}</div>`;
 }
@@ -331,7 +330,6 @@ document.getElementById('view').addEventListener('click',e=>{
   const rm=e.target.closest('[data-rm]'); if(rm){ const [k,i]=rm.dataset.rm.split(':'); A[k].splice(+i,1); maps[k]?maps[k].draw():render(); return; }
   const ed=e.target.closest('[data-edit]'); if(ed){ const [k,i]=ed.dataset.edit.split(':'); openSheet(S[step].items.find(x=>x.k===k),+i); return; }
   if(e.target.id==='retry'){ send(); return; }
-  if(e.target.id==='dl'){ const b=new Blob([JSON.stringify(payload(),null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='risposta_'+Date.now()+'.json'; a.click(); }
 });
 document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.target.matches('textarea,input[type=text],input[type=number]')){ e.preventDefault(); e.target.blur(); } });
 const isField=el=>el&&el.matches&&el.matches('textarea,input[type=text],input[type=number]')&&!el.closest('.sheet');
