@@ -46,6 +46,10 @@
   .q{font-weight:600;font-size:17px;color:var(--q);margin:0 0 4px}
   .q .code{display:inline-block;background:var(--blue-soft);color:var(--q);font-size:12px;font-weight:700;padding:2px 7px;border-radius:6px;margin-right:8px;vertical-align:middle}
   .hint{font-size:13px;color:var(--muted);margin:0 0 12px}
+  .req{color:var(--red);font-weight:700}
+  .card.missing{border-color:var(--red);box-shadow:0 0 0 2px rgba(230,59,75,.25)}
+  .card.missing::after{content:'Questa risposta è obbligatoria';display:block;color:var(--red);font-size:13px;font-weight:600;margin-top:10px}
+  .reqnote{font-size:12px;color:var(--muted);margin:-8px 0 14px}
 
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip{border:1.5px solid var(--line);background:var(--chipbg);border-radius:99px;padding:9px 14px;cursor:pointer;user-select:none;font-size:15px;transition:all .12s;max-width:100%;overflow-wrap:anywhere}
@@ -160,34 +164,34 @@ const S = [
  { id:'intro', title:'', sub:'', items:[{t:'intro'}]},
  { id:'A', title:'A · Qui, adesso', sub:'Le prime domande riguardano il posto in cui ti trovi adesso.',
    items:[
-    {k:'A1', code:'A1', t:'textphoto', q:'Guardati intorno: come descriveresti questo posto a chi non c’è mai stato?', hint:'Bastano poche parole. Se ti va, aggiungi anche una foto.'},
-    {k:'A2', code:'A2', t:'single', q:'Quanto spesso vieni qui?', opts:['quasi ogni giorno','qualche volta a settimana','ogni tanto','è la prima volta o quasi']},
-    {k:'A3', code:'A3', t:'textphoto', q:'Se potessi cambiare una cosa di questo posto, da domani, cosa sarebbe?', hint:'Bastano poche parole. Se ti va, aggiungi anche una foto.'},
+    {k:'A1', code:'A1', req:true, t:'textphoto', q:'Guardati intorno: come descriveresti questo posto a chi non c’è mai stato?', hint:'Bastano poche parole. Se ti va, aggiungi anche una foto.'},
+    {k:'A2', code:'A2', req:true, t:'single', q:'Quanto spesso vieni qui?', opts:['quasi ogni giorno','qualche volta a settimana','ogni tanto','è la prima volta o quasi']},
+    {k:'A3', code:'A3', req:true, t:'textphoto', q:'Se potessi cambiare una cosa di questo posto, da domani, cosa sarebbe?', hint:'Bastano poche parole. Se ti va, aggiungi anche una foto.'},
    ]},
  { id:'B', title:'B · Nella tua zona', sub:'“Zona” = circa 20–30 minuti a piedi da qui.',
    items:[
     {k:'B1', code:'B1', t:'map', q:'A circa 20–30 minuti a piedi da qui, ci sono altri posti dove vai spesso?', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto dove vai spesso', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché ti piace andarci',t:'text'}]}},
    ]},
- { id:'C', title:'C · Nelle ore serali', sub:'Pensa adesso alla tua esperienza in questa zona nelle ore serali…',
+ { id:'C', title:'C · Nelle ore serali', sub:'Pensa adesso alla tua esperienza in questa zona nelle ore serali, quando è buio…',
    items:[
-    {k:'C1', code:'C1', t:'single', q:'Ti capita di stare in giro o spostarti in questa zona?', opts:['spesso','qualche volta','mai']},
-    {k:'C1b', t:'multi', q:'Perché?', showIf:a=>a.C1==='mai', opts:['non ho motivo','non mi va','non posso','non mi sento sicuro/a','altro'], other:true},
-    {k:'C2', code:'C2', t:'multi', q:'Come ti sposti?', showIf:a=>a.C1&&a.C1!=='mai', opts:['a piedi','bici / monopattino','motorino','bus / tramvia','in auto con qualcuno']},
-    {k:'C3', code:'C3', t:'single', q:'Quando prendi i mezzi, con chi sei?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), opts:['sempre solo/a','quasi sempre solo/a','dipende','quasi sempre con altri','sempre con altri'], stack:true},
-    {k:'C4', code:'C4', t:'map', night:true, q:'Ci sono fermate che eviti o dove non ti senti tranquillo/a?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), hint:'Attiva la mappa, poi tocca la fermata (il layer fermate verrà aggiunto nella versione finale).', sheet:{title:'Una fermata che eviti', fields:[{k:'fermata',lbl:'Nome della fermata',t:'text'},{k:'perche',lbl:'Perché preferisci evitarla',t:'text'}]}},
-    {k:'C5a', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviti?', showIf:a=>a.C1&&a.C1!=='mai', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto che eviti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI.filter(x=>x!=='fermata')},{k:'perche',lbl:'Perché preferisci evitarlo',t:'text'}]}},
-    {k:'C5b', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviteresti?', showIf:a=>a.C1==='mai', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto che eviteresti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferiresti evitarlo',t:'text'}]}},
+    {k:'C1', code:'C1', t:'single', q:'Nelle ore serali, ti capita di stare in giro o spostarti in questa zona?', opts:['spesso','qualche volta','mai']},
+    {k:'C1b', t:'multi', q:'Perché non esci la sera in questa zona?', showIf:a=>a.C1==='mai', opts:['non ho motivo','non mi va','non posso','non mi sento sicuro/a','altro'], other:true},
+    {k:'C2', code:'C2', t:'multi', q:'Come ti sposti, la sera?', showIf:a=>a.C1&&a.C1!=='mai', opts:['a piedi','bici / monopattino','motorino','bus / tramvia','in auto con qualcuno']},
+    {k:'C3', code:'C3', t:'single', q:'Quando prendi i mezzi la sera, con chi sei?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), opts:['sempre solo/a','quasi sempre solo/a','dipende','quasi sempre con altri','sempre con altri'], stack:true},
+    {k:'C4', code:'C4', t:'map', night:true, q:'La sera, ci sono fermate che eviti o dove non ti senti tranquillo/a?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), hint:'Attiva la mappa, poi tocca la fermata (il layer fermate verrà aggiunto nella versione finale).', sheet:{title:'Una fermata che eviti', fields:[{k:'fermata',lbl:'Nome della fermata',t:'text'},{k:'perche',lbl:'Perché preferisci evitarla',t:'text'}]}},
+    {k:'C5a', code:'C5', t:'map', night:true, q:'La sera, ci sono posti in questa zona che eviti?', showIf:a=>a.C1&&a.C1!=='mai', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto che eviti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI.filter(x=>x!=='fermata')},{k:'perche',lbl:'Perché preferisci evitarlo',t:'text'}]}},
+    {k:'C5b', code:'C5', t:'map', night:true, q:'La sera, ci sono posti in questa zona che eviteresti?', showIf:a=>a.C1==='mai', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto che eviteresti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferiresti evitarlo',t:'text'}]}},
     {k:'C6', code:'C6', t:'scale2', q:'In generale, quanto ti senti sicuro/a in questa zona…', rows:[{k:'C6_giorno',lbl:'☀️ …di giorno'},{k:'C6_buio',lbl:'🌙 …quando è buio'}], opts:['molto','abbastanza','poco','per nulla']},
    ]},
  { id:'D', title:'D · Domani', sub:'',
-   items:[{k:'D1', code:'D1', t:'textarea', q:'Immagina questa zona tra 5 anni: cosa vorresti che ci fosse o che fosse diverso?'}]},
+   items:[{k:'D1', code:'D1', req:true, t:'textarea', q:'Immagina questa zona tra 5 anni: cosa vorresti che ci fosse o che fosse diverso?'}]},
  { id:'E', title:'E · Due cose su di te', sub:'',
    items:[
-    {k:'eta', t:'number', q:'Età'},
-    {k:'genere', t:'single', q:'Genere', opts:['ragazza','ragazzo','altro / preferisco non dire']},
-    {k:'vive', t:'single', q:'Vivi in questa zona (20–30 minuti a piedi)?', opts:['sì','in un’altra zona di Firenze','fuori Firenze']},
-    {k:'giorno', t:'single', q:'Di giorno sei', opts:['a scuola','lavoro','formazione / altro','niente di questo'], followIf:'a scuola', follow:{k:'scuola_nome', t:'text', lbl:'Nome della tua scuola'}},
-    {k:'attivita', t:'multi', q:'Partecipi a qualcuna di queste attività?', opts:['squadra o attività sportiva','scout','gruppo parrocchiale / religioso','musica, teatro, arte o altri laboratori creativi','collettivo studentesco o politico','volontariato o associazione','altro','nessuna'], other:true},
+    {k:'eta', req:true, t:'number', q:'Età'},
+    {k:'genere', req:true, t:'single', q:'Genere', opts:['ragazza','ragazzo','altro / preferisco non dire']},
+    {k:'vive', req:true, t:'single', q:'Vivi in questa zona (20–30 minuti a piedi)?', opts:['sì','in un’altra zona di Firenze','fuori Firenze']},
+    {k:'giorno', req:true, t:'single', q:'Di giorno sei', opts:['a scuola','lavoro','formazione / altro','niente di questo'], followIf:'a scuola', follow:{k:'scuola_nome', t:'text', lbl:'Nome della tua scuola'}},
+    {k:'attivita', req:true, t:'multi', q:'Partecipi a qualcuna di queste attività?', opts:['squadra o attività sportiva','scout','gruppo parrocchiale / religioso','musica, teatro, arte o altri laboratori creativi','collettivo studentesco o politico','volontariato o associazione','altro','nessuna'], other:true},
    ]},
  { id:'fine', title:'Grazie!', sub:'', items:[{t:'end'}]},
 ];
@@ -195,6 +199,15 @@ const S = [
 /* ---------- invio dati ---------- */
 const ENDPOINT = 'https://script.google.com/macros/s/AKfycbzvc6nK2yR-ANIYD9yMgwBzTX_hqGYR_jEgXlgmQSb4NEvI9b7pHucqQW1ou7lp7MU1Fg/exec'; // URL della Web App Apps Script (vuoto = solo anteprima, nessun invio)
 let sendState = null; // null | 'sending' | 'ok' | 'error'
+function answered(it){ const v=A[it.k]; if(Array.isArray(v)) return v.length>0; if(v==null) return false; return String(v).trim()!==''; }
+function validate(){
+  document.querySelectorAll('.card.missing').forEach(c=>c.classList.remove('missing'));
+  const miss=S[step].items.filter(it=>it.req&&(!it.showIf||it.showIf(A))&&!answered(it));
+  if(!miss.length) return true;
+  miss.forEach(it=>{ const c=document.querySelector(`[data-item="${it.k}"]`); if(c) c.classList.add('missing'); });
+  const first=document.querySelector(`[data-item="${miss[0].k}"]`); if(first) first.scrollIntoView({block:'center',behavior:'smooth'});
+  return false;
+}
 function payloadFull(){ return { auto:{ consenso:!!t0, gps:gpsPos, inizio:t0?new Date(t0).toISOString():null, durata_s:t0?Math.floor((Date.now()-t0)/1000):0, ua:navigator.userAgent }, risposte:A }; }
 async function send(){
   if(!ENDPOINT){ sendState=null; return; }
@@ -252,6 +265,7 @@ function renderNow(){
   document.getElementById('prog').style.width=(step/(S.length-1)*100)+'%';
   document.getElementById('stepnum').textContent=step===0?'':(step+' / '+(S.length-1));
   let h=sec.title?`<h1 class="section-title">${esc(sec.title)}</h1><p class="section-sub">${esc(sec.sub)}</p>`:'';
+  if(sec.items.some(i=>i.req)) h+=`<p class="reqnote">Le domande con <span class="req">*</span> sono obbligatorie.</p>`;
   for(const it of sec.items) h+=card(it);
   v.innerHTML=h;
   for(const it of sec.items) if(it.t==='map') initMap(it);
@@ -262,7 +276,7 @@ function renderNow(){
   document.getElementById('next').textContent=step===0?'Iniziamo':(step===S.length-2?'Concludi':(step===S.length-1?'Nuova compilazione':'Avanti'));
   window.scrollTo({top:0});
 }
-function head(it){ return `<p class="q">${it.code?`<span class="code">${it.code}</span>`:''}${it.q}</p>${it.hint?`<p class="hint">${it.hint}</p>`:''}`; }
+function head(it){ return `<p class="q">${it.code?`<span class="code">${it.code}</span>`:''}${it.q}${it.req?' <span class="req" title="obbligatoria">*</span>':''}</p>${it.hint?`<p class="hint">${it.hint}</p>`:''}`; }
 function chips(k,opts,multi,cls=''){ const cur=A[k]; return `<div class="chips ${cls}" data-k="${k}" data-multi="${multi?1:0}">`+opts.map(o=>`<span class="chip ${multi?(cur||[]).includes(o):cur===o?'on':''}" data-v="${esc(o)}">${esc(o)}</span>`).join('')+`</div>`; }
 function photoHtml(k){ return `<div class="photo"><div class="thumb" id="th_${k}">${A[k+'_foto']?`<img src="${A[k+'_foto']}">`:'📷'}</div><div><label class="btn">Scatta foto<input type="file" accept="image/*" capture="environment" data-photo="${k}" hidden></label><div class="opt">facoltativa · non inquadrare persone</div></div></div>`; }
 function card(it){
@@ -359,6 +373,7 @@ document.getElementById('view').addEventListener('change',e=>{
 document.getElementById('next').onclick=()=>{
   if(step===S.length-1){ location.reload(); return; }
   if(step===0){ t0=Date.now(); askGps(); }
+  if(!validate()) return;
   step=Math.min(S.length-1,step+1); render();
   if(step===S.length-1) send(); };
 document.getElementById('back').onclick=()=>{ step=Math.max(0,step-1); render(); };
