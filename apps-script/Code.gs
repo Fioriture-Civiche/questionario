@@ -29,6 +29,11 @@ const COLS = [
 const PIN_COLS = ['id_risposta','domanda','n','lat','lng','tipo','fermata','perche'];
 
 function doPost(e) {
+  // Lock: serializza le scritture quando più dispositivi inviano nello stesso istante.
+  // appendRow è già atomico per riga; il lock evita comunque interleaving tra foglio risposte e foglio luoghi
+  // e la creazione doppia dei fogli al primo invio.
+  const lock = LockService.getScriptLock();
+  try { lock.waitLock(30000); } catch (err) { return out_({ ok: false, error: 'busy' }); }
   try {
     const data = JSON.parse(e.postData.contents);
     const id = Utilities.getUuid().slice(0, 8);
@@ -71,6 +76,8 @@ function doPost(e) {
     return out_({ ok: true, id });
   } catch (err) {
     return out_({ ok: false, error: String(err) });
+  } finally {
+    lock.releaseLock();
   }
 }
 

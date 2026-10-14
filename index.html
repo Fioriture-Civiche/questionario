@@ -86,8 +86,8 @@
 
   /* map */
   .map{height:62vh;min-height:320px;border-radius:10px;border:1.5px solid var(--line);background:#EAE6DE;position:relative;overflow:hidden;z-index:0}
-  .map.night{background:#161a2a;border:6px solid #1F2340;box-shadow:0 0 0 1.5px #3a4160,0 8px 24px rgba(31,35,64,.35)}
-  .map.night .leaflet-tile-pane{filter:invert(1) hue-rotate(190deg) brightness(.8) contrast(.95) saturate(.45)}
+  .map.night{background:#2a3050;border:6px solid #1F2340;box-shadow:0 0 0 1.5px #3a4160,0 8px 24px rgba(31,35,64,.35)}
+  .map.night .leaflet-tile-pane{filter:invert(1) hue-rotate(190deg) brightness(1.15) contrast(.8) saturate(.4)}
   .map.night .leaflet-control-attribution{background:rgba(22,26,42,.8);color:#aab}
   .map .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px;text-align:center;padding:20px}
   .maplock{position:absolute;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(31,35,64,.28);cursor:pointer}
@@ -160,9 +160,9 @@ const S = [
  { id:'intro', title:'', sub:'', items:[{t:'intro'}]},
  { id:'A', title:'A · Qui, adesso', sub:'Le prime domande riguardano il posto in cui ti trovi adesso.',
    items:[
-    {k:'A1', code:'A1', t:'textphoto', q:'Guardati intorno: se dovessi descrivere questo posto a qualcuno/a, cosa gli/le diresti?', hint:'Raccontacelo con qualche parola e, se ti va, scatta una foto.'},
+    {k:'A1', code:'A1', t:'textphoto', q:'Guardati intorno: come descriveresti questo posto a chi non c’è mai stato?', hint:'Bastano poche parole. Se ti va, aggiungi anche una foto.'},
     {k:'A2', code:'A2', t:'single', q:'Quanto spesso vieni qui?', opts:['quasi ogni giorno','qualche volta a settimana','ogni tanto','è la prima volta o quasi']},
-    {k:'A3', code:'A3', t:'textphoto', q:'Se potessi cambiare una cosa di questo posto, da domani, cosa sarebbe?', hint:'Raccontacelo con qualche parola e, se ti va, scatta una foto.'},
+    {k:'A3', code:'A3', t:'textphoto', q:'Se potessi cambiare una cosa di questo posto, da domani, cosa sarebbe?', hint:'Bastano poche parole. Se ti va, aggiungi anche una foto.'},
    ]},
  { id:'B', title:'B · Nella tua zona', sub:'“Zona” = circa 20–30 minuti a piedi da qui.',
    items:[
@@ -175,9 +175,9 @@ const S = [
     {k:'C2', code:'C2', t:'multi', q:'Come ti sposti?', showIf:a=>a.C1&&a.C1!=='mai', opts:['a piedi','bici / monopattino','motorino','bus / tramvia','in auto con qualcuno']},
     {k:'C3', code:'C3', t:'single', q:'Quando prendi i mezzi, con chi sei?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), opts:['sempre solo/a','quasi sempre solo/a','dipende','quasi sempre con altri','sempre con altri'], stack:true},
     {k:'C4', code:'C4', t:'map', night:true, q:'Ci sono fermate che eviti o dove non ti senti tranquillo/a?', showIf:a=>(a.C2||[]).includes('bus / tramvia'), hint:'Attiva la mappa, poi tocca la fermata (il layer fermate verrà aggiunto nella versione finale).', sheet:{title:'Una fermata che eviti', fields:[{k:'fermata',lbl:'Nome della fermata',t:'text'},{k:'perche',lbl:'Perché preferisci evitarla',t:'text'}]}},
-    {k:'C5a', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviti?', showIf:a=>a.C1&&a.C1!=='mai', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto che eviti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferisci evitarlo',t:'text'}]}},
+    {k:'C5a', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviti?', showIf:a=>a.C1&&a.C1!=='mai', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto che eviti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI.filter(x=>x!=='fermata')},{k:'perche',lbl:'Perché preferisci evitarlo',t:'text'}]}},
     {k:'C5b', code:'C5', t:'map', night:true, q:'Ci sono posti in questa zona che eviteresti?', showIf:a=>a.C1==='mai', hint:'Attiva la mappa, poi tocca un punto per aggiungere un luogo.', sheet:{title:'Un posto che eviteresti', fields:[{k:'tipo',lbl:'Che luogo è',t:'select',opts:LUOGHI},{k:'perche',lbl:'Perché preferiresti evitarlo',t:'text'}]}},
-    {k:'C6', code:'C6', t:'scale2', q:'In generale, quanto ti senti sicuro/a in questa zona…', rows:[{k:'C6_giorno',lbl:'…di giorno'},{k:'C6_buio',lbl:'…quando è buio'}], opts:['molto','abbastanza','poco','per nulla']},
+    {k:'C6', code:'C6', t:'scale2', q:'In generale, quanto ti senti sicuro/a in questa zona…', rows:[{k:'C6_giorno',lbl:'☀️ …di giorno'},{k:'C6_buio',lbl:'🌙 …quando è buio'}], opts:['molto','abbastanza','poco','per nulla']},
    ]},
  { id:'D', title:'D · Domani', sub:'',
    items:[{k:'D1', code:'D1', t:'textarea', q:'Immagina questa zona tra 5 anni: cosa vorresti che ci fosse o che fosse diverso?'}]},
@@ -187,7 +187,7 @@ const S = [
     {k:'genere', t:'single', q:'Genere', opts:['ragazza','ragazzo','altro / preferisco non dire']},
     {k:'vive', t:'single', q:'Vivi in questa zona (20–30 minuti a piedi)?', opts:['sì','in un’altra zona di Firenze','fuori Firenze']},
     {k:'giorno', t:'single', q:'Di giorno sei', opts:['a scuola','lavoro','formazione / altro','niente di questo'], followIf:'a scuola', follow:{k:'scuola_nome', t:'text', lbl:'Nome della tua scuola'}},
-    {k:'attivita', t:'multi', q:'Partecipi a qualcuna di queste attività?', opts:['squadra o attività sportiva','scout','gruppo parrocchiale / religioso','musica, teatro, arte o altri laboratori','collettivo studentesco o politico','volontariato o associazione','altro','nessuna'], other:true},
+    {k:'attivita', t:'multi', q:'Partecipi a qualcuna di queste attività?', opts:['squadra o attività sportiva','scout','gruppo parrocchiale / religioso','musica, teatro, arte o altri laboratori creativi','collettivo studentesco o politico','volontariato o associazione','altro','nessuna'], other:true},
    ]},
  { id:'fine', title:'Grazie!', sub:'', items:[{t:'end'}]},
 ];
@@ -199,10 +199,25 @@ function payloadFull(){ return { auto:{ consenso:!!t0, gps:gpsPos, inizio:t0?new
 async function send(){
   if(!ENDPOINT){ sendState=null; return; }
   sendState='sending'; renderSendState();
-  try{ await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(payloadFull())}); sendState='ok'; }
-  catch(e){ sendState='error'; try{ const q=JSON.parse(localStorage.getItem('fc_queue')||'[]'); q.push(payloadFull()); localStorage.setItem('fc_queue',JSON.stringify(q)); }catch(_){} }
+  const body=JSON.stringify(payloadFull());
+  let ok=false;
+  for(let i=0;i<3&&!ok;i++){
+    try{ await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body}); ok=true; }
+    catch(e){ await new Promise(r=>setTimeout(r,1500*(i+1))); }
+  }
+  if(ok){ sendState='ok'; }
+  else { sendState='error'; try{ const q=JSON.parse(localStorage.getItem('fc_queue')||'[]'); q.push(JSON.parse(body)); localStorage.setItem('fc_queue',JSON.stringify(q)); }catch(_){} }
   renderSendState();
 }
+async function flushQueue(){
+  if(!ENDPOINT) return;
+  let q=[]; try{ q=JSON.parse(localStorage.getItem('fc_queue')||'[]'); }catch(_){ return; }
+  if(!q.length) return;
+  const rest=[];
+  for(const item of q){ try{ await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(item)}); }catch(e){ rest.push(item); } }
+  try{ localStorage.setItem('fc_queue',JSON.stringify(rest)); }catch(_){}
+}
+flushQueue();
 function renderSendState(){ const el=document.getElementById('sendstate'); if(!el) return;
   el.innerHTML = sendState==='sending'?'<span class="hint">Invio in corso…</span>'
     : sendState==='ok'?'<span class="hint" style="color:var(--ok)">✓ Risposte inviate.</span>'
@@ -254,10 +269,10 @@ function card(it){
   let b='';
   switch(it.t){
     case 'intro': return `<div class="intro"><h1>Come vorresti il tuo quartiere?</h1>
-      <p>Proviamo a farci questa domanda con <b>Fioriture Civiche</b>, un progetto che nei prossimi tre anni e mezzo lavorerà in quattro quartieri di Firenze per ripensarne alcuni luoghi e organizzare attività per ragazzi e ragazze:</p>
+      <p>Raccontacelo con questo questionario! Con le tue risposte, e quelle di altri ragazzi e ragazze, costruiremo una <b>mappa vista con i vostri occhi</b> di:</p>
       <div class="zones"><span>Isolotto</span><span>San Jacopino</span><span>Cascine</span><span>Ugnano-Mantignano</span></div>
-      <p>Lo portano avanti il Comune di Firenze e una rete di associazioni e cooperative del territorio, con il sostegno dell’impresa sociale Con i Bambini.</p>
-      <p>Per capire come orientarci vogliamo partire proprio da voi, che questi luoghi li vivete ogni giorno. Le tue risposte andranno a formare una <b>mappa dei quartieri vista con gli occhi di ragazzi e ragazze</b>: uno strumento prezioso per chi progetterà spazi e attività, per fare scelte che partano da quello che vi piace di più e da quello che vorreste cambiare.</p>
+      <p>La mappa servirà a ripensare alcuni spazi e a organizzare attività per voi, partendo da quello che più vi piace e da quello che vorreste cambiare.</p>
+      <p class="hint" style="font-style:italic"><b>Chi siamo:</b> Fioriture Civiche è un progetto del Comune di Firenze e di una rete di associazioni e cooperative del territorio, sostenuto dall’impresa sociale Con i Bambini. Questo questionario è solo il primo passo: il progetto continuerà fino alla fine del 2029.</p>
       <p><span class="tag">⏱ circa 5 minuti</span><span class="tag">🔒 anonimo</span></p>
       <div class="consent"><p><b>Prima di iniziare.</b> Il questionario è pensato per essere compilato <b>nei luoghi che vivi</b> e che vorresti ripensare: per questo ti chiediamo di condividere la tua posizione (GPS), che ci serve a collegare le risposte al posto in cui ti trovi e a centrare le mappe. Se preferisci non condividerla, basta negare il permesso quando il telefono te lo chiede: puoi compilare il questionario lo stesso.</p>
       <p>Il questionario è anonimo: non ti chiediamo nome né contatti. Oltre alle risposte vengono registrate la data e l’ora e le eventuali foto che decidi di scattare. I dati servono solo alla ricerca di Fioriture Civiche e vengono usati in forma aggregata.</p>
