@@ -368,18 +368,41 @@ document.getElementById('done').addEventListener('mousedown',e=>e.preventDefault
 document.getElementById('done').addEventListener('click',()=>{ if(document.activeElement) document.activeElement.blur(); });
 document.getElementById('view').addEventListener('input',e=>{ const t=e.target; if(t.dataset.k) A[t.dataset.k]=t.value; });
 document.getElementById('view').addEventListener('change',e=>{
-  const t=e.target; if(t.dataset.photo&&t.files[0]){ const r=new FileReader(); r.onload=()=>{ A[t.dataset.photo+'_foto']=r.result; document.getElementById('th_'+t.dataset.photo).innerHTML=`<img src="${r.result}">`; }; r.readAsDataURL(t.files[0]); }
+  const t=e.target; if(t.dataset.photo&&t.files[0]){ const k=t.dataset.photo, f=t.files[0]; t.value='';
+    const th=()=>document.getElementById('th_'+k); if(th()) th().textContent='…';
+    shrinkPhoto(f).then(url=>{ A[k+'_foto']=url; if(th()) th().innerHTML=`<img src="${url}">`; saveState(); })
+      .catch(()=>{ delete A[k+'_foto']; if(th()) th().textContent='⚠️'; const o=th()&&th().parentNode.querySelector('.opt'); if(o) o.textContent='Foto non caricata: riprova, oppure vai avanti senza.'; }); }
 });
+/* Le foto del telefono (3-12 MB) vengono ridotte a ~200-300 KB prima di essere tenute in memoria e inviate:
+   a piena risoluzione saturavano la memoria del browser e l'invio non arrivava a destinazione. */
+function shrinkPhoto(file, max=1280, q=0.72){ return new Promise((res,rej)=>{
+  const u=URL.createObjectURL(file), img=new Image();
+  img.onload=()=>{ try{ const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
+      const c=document.createElement('canvas'); c.width=Math.max(1,Math.round(img.naturalWidth*s)); c.height=Math.max(1,Math.round(img.naturalHeight*s));
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height); const out=c.toDataURL('image/jpeg',q); c.width=c.height=0;
+      URL.revokeObjectURL(u); out.startsWith('data:image/jpeg')?res(out):rej(new Error('encode')); }catch(e){ URL.revokeObjectURL(u); rej(e); } };
+  img.onerror=()=>{ URL.revokeObjectURL(u); rej(new Error('decode')); };
+  img.src=u; }); }
+/* Su molti Android aprire la fotocamera fa scaricare la pagina dalla memoria: al ritorno il questionario
+   ripartiva da zero. Lo stato viene salvato quando la pagina va in background e ripristinato al ricaricamento. */
+const STATE_KEY='fc_state';
+function saveState(){ try{ if(step>0&&step<S.length-1) sessionStorage.setItem(STATE_KEY,JSON.stringify({ts:Date.now(),A,step,t0,gpsPos})); }catch(_){} }
+function clearState(){ try{ sessionStorage.removeItem(STATE_KEY); }catch(_){} }
+function restoreState(){ try{ const s=JSON.parse(sessionStorage.getItem(STATE_KEY)||'null');
+    if(s&&Date.now()-s.ts<3*3600*1000&&s.step>0&&s.step<S.length-1){ Object.assign(A,s.A||{}); step=s.step; t0=s.t0; gpsPos=s.gpsPos||null; askGps(); } else clearState(); }catch(_){ clearState(); } }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') saveState(); });
+window.addEventListener('pagehide',saveState);
 document.getElementById('next').onclick=()=>{
-  if(step===S.length-1){ location.reload(); return; }
+  if(step===S.length-1){ if(sendState==='sending') return; location.reload(); return; }
   if(step===0){ t0=Date.now(); askGps(); }
   if(!validate()) return;
   step=Math.min(S.length-1,step+1); render();
-  if(step===S.length-1) send(); };
+  if(step===S.length-1){ clearState(); send(); } else saveState(); };
 document.getElementById('back').onclick=()=>{ step=Math.max(0,step-1); render(); };
 
 function payload(){ return { auto:{ consenso:!!t0, gps:gpsPos, inizio:t0?new Date(t0).toISOString():null, durata_s:t0?Math.floor((Date.now()-t0)/1000):0 }, risposte:Object.fromEntries(Object.entries(A).map(([k,v])=>[k,(typeof v==='string'&&v.startsWith('data:image'))?'[foto allegata]':v])) }; }
 
+restoreState();
 render();
 </script>
 </body>
